@@ -14,7 +14,7 @@ Install Greasemonkey or Tampermonkey plugin for your browser:
 
 Install script to your browser.
 
-<a href="https://github.com/obukhow/oggetto_redmine_improvements/raw/master/ori.user.js"><img src="http://i.imgur.com/56SP4Ff.png" alt="Install script"/></a>
+<a href="https://github.com/alex-degtyarev/oggetto_redmine_improvements/tree/alexAquazondTest/ori.user.js"><img src="http://i.imgur.com/56SP4Ff.png" alt="Install script"/></a>
 
 ## Screenshots
 
