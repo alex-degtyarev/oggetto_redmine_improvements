@@ -5,7 +5,7 @@
 // @namespace   obukhow.redmine
 // @downloadURL https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/ori.user.js
 // @updateURL   https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/ori.user.js
-// @include     http://redmine.oggettoweb.com/issues/*
+// @include     http://aquadevserv.dyndns.org:8888/issues/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 // @require     http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js
 // @require     https://raw.githubusercontent.com/robcowie/jquery-stopwatch/master/jquery.stopwatch.js
