@@ -3,8 +3,8 @@
 // @description Add some useful features to Redmine's issue page
 // @author      Denis Obukhov
 // @namespace   obukhow.redmine
-// @downloadURL https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/ori.user.js
-// @updateURL   https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/ori.user.js
+// @downloadURL https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/ori.user.js
+// @updateURL   https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/ori.user.js
 // @include     http://aquadevserv.dyndns.org:8888/issues/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 // @require     http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js
@@ -12,8 +12,8 @@
 // @require     https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js
 // @version     2.0.3
 // @resource    select4_CSS  http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css
-// @resource    bootstrap3_CSS https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/css/bootstrap.css?v=2000
-// @resource    configForm_HTML https://raw.githubusercontent.com/obukhow/oggetto_redmine_improvements/master/html/config_1.3.html
+// @resource    bootstrap3_CSS https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/css/bootstrap.css?v=2000
+// @resource    configForm_HTML https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/html/config_1.3.html
 // @grant       unsafeWindow
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -44,15 +44,15 @@ GM_addStyle("table.rtfbfq {text-align:right; border:1px solid #fff;} .rtfbfqHead
 // variables
 
 var STATUS = {
-    'NEW': {"VALUE": 1, 'TEXT': "New"},
-    'IN_PROGRESS': {"VALUE": 2, "TEXT": "In Progress"},
-    'RESOLVED': {"VALUE": 3, "TEXT": "Resolved"},
-    'FEEDBACK': {"VALUE": 4, "TEXT": "Feedback"},
-    'FROZEN': {"VALUE": 8, "TEXT": "Frozen"},
-    'REVIEW_FAILED': {"VALUE": 18, "TEXT": "Review failed"},
-    'VERIFY_FAILED': {"VALUE": 17, "TEXT": "Verify failed"},
-    'READY_FOR_STAGE': {"VALUE": 14, "TEXT": "Ready for Stage"},
-    'CLOSED': {"VALUE": 5, "TEXT": "Closed"}
+    'NEW': {"VALUE": 20, 'TEXT': "New"},
+    'IN_PROGRESS': {"VALUE": 21, "TEXT": "In Progress"},
+    'RESOLVED': {"VALUE": 22, "TEXT": "Resolved"},
+    'FEEDBACK': {"VALUE": 44, "TEXT": "Feedback"},
+    'FROZEN': {"VALUE": 29, "TEXT": "Frozen"},
+    'REVIEW_FAILED': {"VALUE": 45, "TEXT": "Review failed"},
+    'VERIFY_FAILED': {"VALUE": 24, "TEXT": "Verify failed"},
+    'READY_FOR_STAGE': {"VALUE": 47, "TEXT": "Ready for Stage"},
+    'CLOSED': {"VALUE": 32, "TEXT": "Closed"}
 };
 
 var RU_TEXT = {
