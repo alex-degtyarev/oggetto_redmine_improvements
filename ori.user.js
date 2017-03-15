@@ -41,7 +41,15 @@ GM_addStyle('#fancybox-content .tabular p{padding-left:100px;} #config_form p {p
 GM_addStyle('#fancybox-content .tabular p{padding-left:100px;} #config_form p {padding-left:200px !important;}');
 GM_addStyle('table.rtfbfq {text-align:right; border:1px solid #fff;} .rtfbfqHeader {font-weight:bold; text-align:center; color: #DDD; min-width: 20px;}');
 // variables
+// Базовый процесс для всех трекеров Аквазонд (планируется потом расширение трекеров и процессов): 
+//                                           ->Закрыта 
+//План->Новая->В процессе|Заморожена->Решена-->
+//                                           ->Возврат на доработку
 var STATUS = {
+  'PLAN': {
+    'VALUE': 31,
+    'TEXT': 'План'
+  },
   'NEW': {
     'VALUE': 20,
     'TEXT': 'Новая'
@@ -55,20 +63,20 @@ var STATUS = {
     'TEXT': 'Решена'
   },
   'FEEDBACK': {
-    'VALUE': 44,
-    'TEXT': 'На согласовании'
+    'VALUE': 46,
+    'TEXT': 'Согласованна'
   },
   'FROZEN': {
     'VALUE': 29,
     'TEXT': 'Заморожена'
   },
   'REVIEW_FAILED': {
-    'VALUE': 45,
-    'TEXT': 'Не согласованна'
+    'VALUE': 24,
+    'TEXT': 'Возврат на доработку'
   },
   'VERIFY_FAILED': {
-    'VALUE': 24,
-    'TEXT': 'Возврат на Доработку'
+    'VALUE': 25,
+    'TEXT': 'Тест провален'
   },
   'READY_FOR_STAGE': {
     'VALUE': 47,
@@ -80,9 +88,9 @@ var STATUS = {
   }
 };
 var RU_TEXT = {
-  START_REVIEW: 'Начать ревью',
-  REVIEW_PASSED: 'Ревью пройдено…',
-  REVIEW_FAILED: 'Потрачено…',
+  START_REVIEW: 'Начать проврку',
+  REVIEW_PASSED: 'Проверка пройдена!',
+  REVIEW_FAILED: 'Вернуть на доработку',
   TEST_PASSED: 'Успешно…',
   TEST_FAILED: 'Нашлись баги…',
   CLOSE_ISSUE: 'Закрыть',
@@ -137,6 +145,7 @@ var TIME_TYPE = {
   'FUCKUP': 'Fuc%up',
   'TEAM_FUCKUP': 'Team Fuc%up'
 };
+var assignedTo = $('div.assigned-to>div>a').attr('href');
 var isAssignedToMe = ($('#loggedas>a').attr('href') == $('div.assigned-to>div>a').attr('href'));
 var myUserLink = $('#loggedas a').attr('href');
 var myID = myUserLink.match(/(\d*)$/i) [0];
@@ -146,7 +155,7 @@ var timeKey = issueID + '_startTime';
 var token = $('meta[name="csrf-token"]').attr('content');
 var $buttonsContainer = $('a.icon-edit').parent();
 var defaultLightBoxOptions = {
-  'content': '#update',
+  'href': '#update',
   'width': '600',
   'height': '200',
   'type': 'inline'
@@ -158,7 +167,7 @@ var defaultLightBoxOptions = {
 //alert(this.myUserLink);
 //alert(this.myID);
 //alert(this.issueID);
-//alert(this.currentStatus);
+//alert(this.assignedTo);
 
 
 ///alert(this.currentStatus);:has
@@ -453,7 +462,7 @@ exportFunction(showConfigLightBoxOnClosed, unsafeWindow, {
   defineAs: 'showConfigLightBoxOnClosed'
 });
 var showConfigLightBox = {
-  'content': '#config_form_block',
+  'href': '#config_form_block',
   'width': '600',
   'height': '200',
   'type': 'inline'
@@ -502,7 +511,7 @@ function canClose() {
  */
 
 function canDoReview() {
-  return (currentStatus == STATUS.RESOLVED.TEXT); //&& isReviewer());
+  return (currentStatus == STATUS.RESOLVED.TEXT);// && isReviewer());
 } /**
  * Camel case string formatter
  *
@@ -712,6 +721,9 @@ unsafeWindow.resolveIssueLightBox.onClosed = unsafeWindow.resolveIssueOnClosed;
 function resolveIssue() {
   formPrepareToShowInPopup();
   FIELDS.SPENT_TIME.val(getTimerTime());
+  //! alex added auto change state
+  FIELDS.STATUS.val(STATUS.RESOLVED.VALUE);
+  //! 
   unsafeWindow.jQuery.fancybox(unsafeWindow.resolveIssueLightBox);
 };
 /**
@@ -744,7 +756,10 @@ unsafeWindow._showReviewResultPopupLightBox.onComplete = unsafeWindow._showRevie
 unsafeWindow._showReviewResultPopupLightBox.onClosed = unsafeWindow._showReviewResultPopupOnClosed;
 function _showReviewResultPopup(status) {
   FIELDS.SPENT_TIME.val(getTimerTime());
-  FIELDS.PRIVATE_NOTES.prop('checked', true);
+  //FIELDS.PRIVATE_NOTES.prop('checked', true);
+//! alex added auto change status  
+  FIELDS.STATUS.val(status);
+//!
   formPrepareToShowInPopup();
   unsafeWindow.jQuery.fancybox(unsafeWindow._showReviewResultPopupLightBox);
 } /**
@@ -752,21 +767,29 @@ function _showReviewResultPopup(status) {
  */
 
 function reviewPassed() {
-  FIELDS.NOTES.val('Ревью пройдено');
-  FIELDS.TIME_COMMENT.val('Проверка кода по пул-реквесту');
-  _showReviewResultPopup(STATUS.RESOLVED.VALUE);//RESOLVED.VALUE);
+  FIELDS.NOTES.val('Проверка выполнения задачи завершена. Замечений нет');
+  FIELDS.TIME_COMMENT.val('Проверка выполнения задачи');
+//  _showReviewResultPopup(STATUS.RESOLVED.VALUE);//RESOLVED.VALUE);
+  //alert(STATUS.FEEDBACK.VALUE);
+  _showReviewResultPopup(STATUS.CLOSED.VALUE);//RESOLVED.VALUE);
+  //!alex added auto submit task for close action 
+  $('#issue-form').submit();
 } /**
  * Review failed
  */
 
 function reviewFailed() {
-  FIELDS.NOTES.val('Комментарии к пулл-реквесту');
-  FIELDS.TIME_COMMENT.val('Проверка кода по пул-реквесту');
+  FIELDS.NOTES.val('Замечания к выполнению задачи: ');
+  FIELDS.TIME_COMMENT.val('Проверка выполнения задачи');
   _showReviewResultPopup(STATUS.REVIEW_FAILED.VALUE);
+  //! alex test localStorage.setItem(issueID + '_review',false);
+  localStorage.removeItem(issueID + '_review');
+  //!
 } /*
  * Test failed
  */
 
+//! not used for aquazond
 function testFailed() {
   FIELDS.TIME_COMMENT.val('Тестирование');
   _showReviewResultPopup(STATUS.VERIFY_FAILED.VALUE);
@@ -774,6 +797,7 @@ function testFailed() {
  * Test passed
  */
 
+//! not used for aquazond
 function testPassed() {
   FIELDS.TIME_COMMENT.val('Тестирование');
   _showReviewResultPopup(STATUS.READY_FOR_STAGE.VALUE);
@@ -854,7 +878,7 @@ exportFunction(_showLogTimePopupOnClosed, unsafeWindow, {
   defineAs: '_showLogTimePopupOnClosed'
 });
 var _showLogTimePopupLightBox = {
-  'content': '#log_time_container',
+  'href': '#log_time_container',
   'width': '600',
   'height': '250'
 };
@@ -868,12 +892,21 @@ function _showLogTimePopup() {
  * Close issue
  */
 
+//! not used in aquazond 
 function closeIssue() {
   FIELDS.STATUS.val(STATUS.CLOSED.VALUE);
   $('#issue-form').submit();
-} /**
+} 
+
+function changeIssueFromPlan() {
+    FIELDS.STATUS.val(STATUS.NEW.VALUE);
+  $('#issue-form').submit();
+}
+
+/**
  * Show issue total regular time
  */
+
 
 function showTotalRegularTime() {
   var url = getTimeTrackerUrl(TIME_TYPE.REGULAR);
@@ -998,12 +1031,21 @@ $('a.icon-fav-off').prepend('<span class="glyphicon glyphicon-eye-open"></span> 
 $('#issue-form input[type=submit]').addClass('btn btn-success form-submit-btn');
 $('#issue-form input[type=submit]').next().addClass('btn btn-primary form-preview-btn').prepend('<span class="glyphicon glyphicon-eye-open"></span> ');
 //add buttons
+
+//! alex added check if assigned then translate status to New
+//alert(currentStatus == STATUS.PLAN.TEXT); 
+if( assignedTo != undefined && currentStatus == STATUS.PLAN.TEXT) 
+{
+  changeIssueFromPlan();
+}
+//!
+
 if (isAssignedToMe) {
   if (canStartProgress()) {
     var text = getStartProgressText();
     addButton(text, getStartProgressFunction() + '()', 'btn-success', 'glyphicon-play-circle');
-  } else if (currentStatus == STATUS.IN_PROGRESS.TEXT) {
-    if (isOnReview()) {
+  } else if (currentStatus == STATUS.IN_PROGRESS.TEXT) { 
+    if (isOnReview()) {    
       addButton(TEXT.REVIEW_PASSED, 'reviewPassed()', 'btn-success', 'glyphicon-thumbs-up');
       showTimer();
       addButton(TEXT.REVIEW_FAILED, 'reviewFailed()', 'btn-danger', 'glyphicon-thumbs-down');
@@ -1027,13 +1069,17 @@ if (isAssignedToMe) {
 } else {
   addButton(TEXT.ASSIGN_TO_ME, 'assignToMe()', 'btn-primary', 'glyphicon-user');
 }
+
 addMoreButton();
 showTotalRegularTime();
 showMyTime();
 addHideFormFieldsControl();
-if (!GM_getValue('user_role')) {
-  unsafeWindow.showConfig();
-}
+//! Alex disable config menu
+//if (!GM_getValue('user_role')) {
+//  unsafeWindow.showConfig();
+//}
+//!
+
 GM_registerMenuCommand('Preferences…', unsafeWindow.showConfig, 'C');
 exportFunction(assignToMe, unsafeWindow, {
   defineAs: 'assignToMe'
@@ -1393,4 +1439,20 @@ Exception: ReferenceError: GM_getResourceText is not defined
 /*
 Exception: ReferenceError: GM_getResourceText is not defined
 @Scratchpad/1:25:5
+*/
+/*
+Exception: ReferenceError: GM_getResourceText is not defined
+@Scratchpad/3:25:5
+*/
+/*
+Exception: ReferenceError: GM_getResourceText is not defined
+@Scratchpad/3:25:5
+*/
+/*
+Exception: ReferenceError: GM_getResourceText is not defined
+@Scratchpad/3:25:5
+*/
+/*
+Exception: ReferenceError: GM_getResourceText is not defined
+@Scratchpad/3:25:5
 */
