@@ -88,7 +88,7 @@ var STATUS = {
   }
 };
 var RU_TEXT = {
-  START_REVIEW: 'Начать проврку',
+  START_REVIEW: 'Начать проверку',
   REVIEW_PASSED: 'Проверка пройдена!',
   REVIEW_FAILED: 'Вернуть на доработку',
   TEST_PASSED: 'Успешно…',
