@@ -88,7 +88,7 @@ var STATUS = {
   }
 };
 var RU_TEXT = {
-  START_REVIEW: 'Начать проверку',
+  START_REVIEW: 'Начать проврку',
   REVIEW_PASSED: 'Проверка пройдена!',
   REVIEW_FAILED: 'Вернуть на доработку',
   TEST_PASSED: 'Успешно…',
@@ -1040,7 +1040,7 @@ if( assignedTo != undefined && currentStatus == STATUS.PLAN.TEXT)
 }
 //!
 
-if (isAssignedToMe) {
+if (isAssignedToMe ||  (assignedTo != undefined)) {
   if (canStartProgress()) {
     var text = getStartProgressText();
     addButton(text, getStartProgressFunction() + '()', 'btn-success', 'glyphicon-play-circle');
@@ -1053,7 +1053,7 @@ if (isAssignedToMe) {
       addButton(TEXT.TEST_PASSED, 'testPassed()', 'btn-success', 'glyphicon-thumbs-up');
       showTimer();
       addButton(TEXT.TEST_FAILED, 'testFailed()', 'btn-danger', 'glyphicon-thumbs-down');
-    } else {
+    } else if (isAssignedToMe) {
       addButton(TEXT.RESOLVE_ISSUE, 'resolveIssue()', 'btn-success', 'glyphicon-ok');
       showTimer();
       addButton(TEXT.FROZE_ISSUE, 'frozeProgress()', 'btn-primary', 'glyphicon-pause');
@@ -1069,6 +1069,7 @@ if (isAssignedToMe) {
 } else {
   addButton(TEXT.ASSIGN_TO_ME, 'assignToMe()', 'btn-primary', 'glyphicon-user');
 }
+
 
 addMoreButton();
 showTotalRegularTime();
