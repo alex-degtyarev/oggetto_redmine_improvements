@@ -63,8 +63,8 @@ var STATUS = {
     'TEXT': 'Решена'
   },
   'FEEDBACK': {
-    'VALUE': 46,
-    'TEXT': 'Согласованна'
+    'VALUE': 38,
+    'TEXT': 'Обратная связь'
   },
   'FROZEN': {
     'VALUE': 29,
@@ -98,6 +98,7 @@ var RU_TEXT = {
   CONTINUE_PROGRESS: 'Продолжить работу',
   START_PROGRESS: 'Начать работу',
   RESOLVE_ISSUE: 'Завершить…',
+  FIX_TIME: 'Этап...|| Обр.связь',
   FROZE_ISSUE: 'На паузу',
   ASSIGN_TO_ME: 'Назначить на меня',
   SPENT_BY_ME: 'Затрачено мной',
@@ -116,6 +117,7 @@ var EN_TEXT = {
   CONTINUE_PROGRESS: 'Continue Progress',
   START_PROGRESS: 'Start Progress',
   RESOLVE_ISSUE: 'Resolve…',
+  FIX_TIME: 'Save time...',
   FROZE_ISSUE: 'Froze',
   ASSIGN_TO_ME: 'Assign to Me',
   SPENT_BY_ME: 'Spent by me',
@@ -725,7 +727,19 @@ function resolveIssue() {
   FIELDS.STATUS.val(STATUS.RESOLVED.VALUE);
   //! 
   unsafeWindow.jQuery.fancybox(unsafeWindow.resolveIssueLightBox);
-};
+}
+
+//!alex add save time for aquazond
+function fixCurrentTime() {
+    formPrepareToShowInPopup();
+  FIELDS.SPENT_TIME.val(getTimerTime());
+  //! alex added auto change state
+  //FIELDS.STATUS.val(STATUS.RESOLVED.VALUE);
+  FIELDS.STATUS.val(STATUS.FROZEN.VALUE);
+  //!
+  unsafeWindow.jQuery.fancybox(unsafeWindow.resolveIssueLightBox);
+}
+//!alex
 /**
  * Show review result form
  *
@@ -897,7 +911,7 @@ function closeIssue() {
   FIELDS.STATUS.val(STATUS.CLOSED.VALUE);
   $('#issue-form').submit();
 } 
-
+//!
 function changeIssueFromPlan() {
     FIELDS.STATUS.val(STATUS.NEW.VALUE);
   $('#issue-form').submit();
@@ -1039,12 +1053,12 @@ if( assignedTo != undefined && currentStatus == STATUS.PLAN.TEXT)
   changeIssueFromPlan();
 }
 //!
-
 if (isAssignedToMe ||  (assignedTo != undefined)) {
-  if (canStartProgress()) {
+  if (canStartProgress() && currentStatus != STATUS.FEEDBACK.TEXT) {
     var text = getStartProgressText();
-    addButton(text, getStartProgressFunction() + '()', 'btn-success', 'glyphicon-play-circle');
-  } else if (currentStatus == STATUS.IN_PROGRESS.TEXT) { 
+    if(isAssignedToMe)
+        addButton(text, getStartProgressFunction() + '()', 'btn-success', 'glyphicon-play-circle');
+  } else if (currentStatus == STATUS.IN_PROGRESS.TEXT) {
     if (isOnReview()) {    
       addButton(TEXT.REVIEW_PASSED, 'reviewPassed()', 'btn-success', 'glyphicon-thumbs-up');
       showTimer();
@@ -1057,6 +1071,7 @@ if (isAssignedToMe ||  (assignedTo != undefined)) {
       addButton(TEXT.RESOLVE_ISSUE, 'resolveIssue()', 'btn-success', 'glyphicon-ok');
       showTimer();
       addButton(TEXT.FROZE_ISSUE, 'frozeProgress()', 'btn-primary', 'glyphicon-pause');
+      addButton(TEXT.FIX_TIME, 'fixCurrentTime()', 'btn-danger', 'glyphicon-asterisk');
     }
   } else if (canStartTest()) {
     var text = getStartProgressText();
@@ -1099,6 +1114,9 @@ exportFunction(testPassed, unsafeWindow, {
 });
 exportFunction(frozeProgress, unsafeWindow, {
   defineAs: 'frozeProgress'
+});
+exportFunction(fixCurrentTime, unsafeWindow, {
+    defineAs: 'fixCurrentTime'
 });
 exportFunction(continueProgress, unsafeWindow, {
   defineAs: 'continueProgress'
