@@ -6,6 +6,7 @@
 // @downloadURL https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/ori.user.js
 // @updateURL   https://raw.githubusercontent.com/alex-degtyarev/oggetto_redmine_improvements/alexAquazondTest/ori.user.js
 // @include     http://aquadevserv.dyndns.org:8888/issues/*
+// @include     http://redmine.aquazond.loc/issues/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 // @require     http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js
 // @require     https://raw.githubusercontent.com/robcowie/jquery-stopwatch/master/jquery.stopwatch.js
